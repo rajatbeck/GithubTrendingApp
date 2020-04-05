@@ -2,12 +2,12 @@ package com.rajat.zomatotest.di
 
 import android.app.Application
 import com.rajat.zomatotest.BuildConfig
+import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.RxErrorHandlingCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -47,7 +47,6 @@ object NetworkModule {
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
-
         return if (BuildConfig.DEBUG) {
             val httpLogger = HttpLoggingInterceptor()
             httpLogger.level = HttpLoggingInterceptor.Level.BODY
@@ -69,7 +68,12 @@ object NetworkModule {
             .build()
     }
 
-
+    @JvmStatic
+    @Provides
+    @Singleton
+    fun provideGithubServiceAPI(retrofit: Retrofit):GithubService{
+        return retrofit.create(GithubService::class.java)
+    }
 
 
 }
