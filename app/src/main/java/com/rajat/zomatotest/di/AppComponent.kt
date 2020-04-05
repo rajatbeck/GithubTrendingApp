@@ -2,6 +2,7 @@ package com.rajat.zomatotest.di
 
 import android.app.Application
 import com.rajat.zomatotest.MainActivity
+import com.rajat.zomatotest.ZomatoApp
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -9,7 +10,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
     NetworkModule::class,
-    ViewModelModule::class
+    ViewModelModule::class,
+    FragmentSubComponentModule::class
 ])
 interface AppComponent {
 
@@ -22,7 +24,8 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-    fun inject(mainActivity: MainActivity)
+    fun fragmentComponent():FragmentComponent.Factory
 
+    fun inject(zomatoApp: ZomatoApp)
 
 }

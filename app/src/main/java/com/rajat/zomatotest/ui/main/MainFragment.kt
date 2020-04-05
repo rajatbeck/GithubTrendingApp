@@ -6,8 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.rajat.zomatotest.R
+import com.rajat.zomatotest.ZomatoApp
+import com.rajat.zomatotest.utils.ViewModelFactory
+import javax.inject.Inject
 
 class MainFragment : Fragment() {
 
@@ -15,7 +19,18 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    @Inject
+    lateinit var factory:ViewModelProvider.Factory
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun inject(){
+        (requireActivity().application as ZomatoApp).fragmentComponent().inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -24,7 +39,7 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
     }
 
 }
