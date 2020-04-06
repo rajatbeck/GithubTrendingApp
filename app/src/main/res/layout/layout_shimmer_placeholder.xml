@@ -6,8 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <View
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/thirty_two_dp"
+        android:layout_height="@dimen/thirty_two_dp"
         android:id="@+id/shimmer_circle"
         app:layout_constraintTop_toTopOf="@id/topView"
         app:layout_constraintStart_toStartOf="parent"

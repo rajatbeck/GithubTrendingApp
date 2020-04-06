@@ -6,4 +6,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="titleColor">#25282B</color>
     <color name="shimmerBackground">#DDDDDD</color>
+    <color name="errorTitleColor">#4A4A4A</color>
+    <color name="errorMessageColor">#929292</color>
+    <color name="greenColor">#31B057</color>
 </resources>
