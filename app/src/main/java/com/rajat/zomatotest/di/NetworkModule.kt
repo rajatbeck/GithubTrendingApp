@@ -41,12 +41,14 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         okHttpClientBuilder: OkHttpClient.Builder,
-        application: Application
+        application: Application,
+        cache: Cache
     ): OkHttpClient {
         val builder = okHttpClientBuilder
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
+            .cache(cache)
         return if (BuildConfig.DEBUG) {
             val httpLogger = HttpLoggingInterceptor()
             httpLogger.level = HttpLoggingInterceptor.Level.BODY
