@@ -15,4 +15,5 @@
     <dimen name="eighteen_sp">18sp</dimen>
     <dimen name="fifteen_sp">15sp</dimen>
     <dimen name="four_dp">4dp</dimen>
+    <dimen name="twelve_sp">12sp</dimen>
 </resources>

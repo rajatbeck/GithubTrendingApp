@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="@dimen/thirty_two_dp"
+        android:layout_height="@dimen/thirty_two_dp"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvAuthor"
+
+        />
+
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginTop="@dimen/sixteen_dp"
+        android:layout_marginEnd="@dimen/sixteen_dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/twelve_sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Author" />
+
+    <TextView
+        android:id="@+id/tvRepoName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginTop="@dimen/six_dp"
+        android:layout_marginEnd="@dimen/sixteen_dp"
+        android:layout_marginBottom="@dimen/thirty_two_dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/fifteen_sp"
+        app:layout_constraintBottom_toBottomOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintTop_toBottomOf="@id/tvAuthor"
+        tools:text="Repo Name" />
+
+    <TextView
+        android:id="@+id/tvDescriptionAndLink"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:layout_marginEnd="@dimen/sixteen_dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/twelve_sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvAuthor"
+        app:layout_constraintTop_toBottomOf="@id/tvRepoName"
+        tools:text="Description(URL)" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/languageColorCode"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:background="@drawable/background_rounded_outline"
+        app:layout_constraintBottom_toBottomOf="@id/barrier"
+        app:layout_constraintStart_toStartOf="@id/tvAuthor"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink"
+
+        tools:src="#3572A5" />
+
+    <TextView
+        android:id="@+id/tvLanguage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/four_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/twelve_sp"
+        app:layout_constraintStart_toEndOf="@id/languageColorCode"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink"
+        tools:text="C++" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivStar"
+        android:layout_width="@dimen/sixteen_dp"
+        android:layout_height="@dimen/sixteen_dp"
+        android:layout_marginStart="@dimen/twenty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:src="@drawable/star_yellow_16"
+        app:layout_constraintStart_toEndOf="@id/tvLanguage"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink" />
+
+    <TextView
+        android:id="@+id/tvStarCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/four_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/twelve_sp"
+        app:layout_constraintStart_toEndOf="@id/ivStar"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink"
+        tools:text="1223" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFork"
+        android:layout_width="@dimen/sixteen_dp"
+        android:layout_height="@dimen/sixteen_dp"
+        android:layout_marginStart="@dimen/twenty_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:src="@drawable/fork_black_16"
+        app:layout_constraintStart_toEndOf="@id/tvStarCount"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink" />
+
+    <TextView
+        android:id="@+id/tvForkName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/four_dp"
+        android:layout_marginTop="@dimen/eight_dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/authorColor"
+        android:textSize="@dimen/twelve_sp"
+        app:layout_constraintStart_toEndOf="@id/ivFork"
+        app:layout_constraintTop_toBottomOf="@id/tvDescriptionAndLink"
+        tools:text="1223" />
+
+  <View
+      android:layout_width="0dp"
+      android:layout_height="1dp"
+      android:id="@+id/elevationView"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/languageColorCode"
+      android:layout_marginTop="@dimen/sixteen_dp"
+      />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="tvDescriptionAndLink,languageColorCode,
+        tvLanguage,
+ivStar,
+elevationView,
+tvStarCount,ivFork,tvForkName"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tvRepoName,elevationView"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

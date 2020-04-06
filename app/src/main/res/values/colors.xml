@@ -9,4 +9,5 @@
     <color name="errorTitleColor">#4A4A4A</color>
     <color name="errorMessageColor">#929292</color>
     <color name="greenColor">#31B057</color>
+    <color name="authorColor">#52575C</color>
 </resources>
