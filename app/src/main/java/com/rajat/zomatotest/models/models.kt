@@ -32,3 +32,12 @@ data class BuiltBy(
     @Json(name="href") @ColumnInfo(name="href") val href: String?,
     @Json(name="username") @ColumnInfo(name="username") val username: String?
 )
+
+sealed class Resource<T>(
+    val data: T? = null,
+    val message: String? = null
+) {
+    class Success<T>(data: T? = null) : Resource<T>(data)
+    class Loading<T>(data: T? = null) : Resource<T>(data)
+    class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <View
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:id="@+id/shimmer_circle"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/topView"
+        android:background="@drawable/background_rounded"
+        android:layout_marginLeft="@dimen/sixteen_dp"
+        android:layout_marginRight="@dimen/sixteen_dp" />
+    
+    <View
+        android:id="@+id/topView"
+        android:layout_width="@dimen/hundred_dp"
+        app:layout_constraintStart_toEndOf="@id/shimmer_circle"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginTop="@dimen/twenty_one_dp"
+        android:background="@drawable/background_rounded_corners"
+        android:layout_height="@dimen/six_dp"/>
+
+    <View
+        android:id="@+id/bottomView"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toEndOf="@id/shimmer_circle"
+        app:layout_constraintTop_toBottomOf="@id/topView"
+        android:layout_marginStart="@dimen/sixteen_dp"
+        android:layout_marginTop="@dimen/sixteen_dp"
+        android:layout_marginBottom="@dimen/sixteen_dp"
+        android:layout_marginEnd="@dimen/thirty_two_dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/background_rounded_corners"
+        android:layout_height="@dimen/six_dp"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/one_dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottomView"
+        android:layout_marginTop="@dimen/twenty_one_dp"
+        android:background="@color/shimmerBackground"
+        android:orientation="horizontal"
+        />
+    
+</androidx.constraintlayout.widget.ConstraintLayout>
