@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ZomatoTest</string>
+    <string name="header_trending">Trending</string>
 </resources>
