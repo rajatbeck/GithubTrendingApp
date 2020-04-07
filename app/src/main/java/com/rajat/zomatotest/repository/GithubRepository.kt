@@ -6,7 +6,6 @@ import com.rajat.zomatotest.models.Resource
 import com.rajat.zomatotest.repository.local.RepositoryDAO
 import com.rajat.zomatotest.repository.remote.GithubService
 import io.reactivex.Completable
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -57,15 +56,41 @@ class GithubRepository @Inject constructor(private val dao: RepositoryDAO,privat
     }
 
     fun makeRequestForTrendingRepo(force:Boolean = false):Single<Resource<List<Repository>>>{
-        return fetchDataFromNetwork()
-            .flatMap {
+        return getRepositoryListFromDb()
+            .flatMap {dbList-> fetchDataFromNetwork().map { networkList-> uniqueMergeList(dbList,networkList) }
+            }.flatMap {
                 if(it is Resource.Success){
-                    deleteAndInsertIntoDb(it.data as List<Repository>)
-                        .andThen(Single.just(it))
+                    deleteAndInsertIntoDb(it.data as List<Repository>).andThen(Single.just(it))
                 }else{
                    getRepositoryListFromDb()
                 }
             }.subscribeOn(Schedulers.io())
+    }
+
+    private fun uniqueMergeList(
+        dbList: Resource<List<Repository>>,
+        networkList: Resource<List<Repository>>
+    ): Resource<List<Repository>> {
+        return if (networkList is Resource.Success) {
+            val updatedList = mutableListOf<Repository>()
+            networkList.data?.forEach { networkData ->
+                var dataAlreadyExists = false
+                dbList.data?.forEach { offlineData ->
+                    if ("${offlineData.name}${offlineData.author}" == "${networkData.name}${networkData.author}") {
+                        dataAlreadyExists = true
+                        val updatedData =
+                            networkData.copy(isExpanded = offlineData.isExpanded)
+                        updatedList.add(updatedData)
+                    }
+                }
+                if (!dataAlreadyExists) {
+                    updatedList.add(networkData)
+                }
+            }
+            Resource.Success(updatedList.toList())
+        } else {
+            dbList
+        }
     }
 
     fun getObservableRepositoryListDB():LiveData<List<Repository>> = dao.getObservableRepositoryList()

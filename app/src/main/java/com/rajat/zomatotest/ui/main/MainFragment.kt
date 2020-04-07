@@ -1,6 +1,7 @@
 package com.rajat.zomatotest.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,6 +73,7 @@ class MainFragment : Fragment() {
     }
 
     private fun renderUI(uiResponse: Resource<List<Repository>>) {
+        Log.d(TAG,"**${uiResponse.toString()}**")
         when (uiResponse) {
             is Resource.Success -> {
                 shimmerViewContainer.visibility = View.GONE
