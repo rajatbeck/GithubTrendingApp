@@ -1,5 +1,6 @@
 package com.rajat.zomatotest.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -35,12 +36,12 @@ class MainViewModel @Inject constructor(private val githubRepository: GithubRepo
     fun observeTrendingRepository():LiveData<Resource<List<Repository>>> = mediadatorRepoLiveData
 
     fun fetchTrendingGitHubRepository(forceFetch: Boolean = false) {
-        mediadatorRepoLiveData.value = Resource.Loading()
         val disposable = githubRepository.makeRequestForTrendingRepo(forceFetch)
             .observeOn( AndroidSchedulers.mainThread())
             .subscribe({response ->
                 mediadatorRepoLiveData.value = response
             },{error->
+                Log.d("**MAINVIEWMODEL**",error.toString())
                 //some unexpected error occured..
             })
         compositeDisposable.add(disposable)

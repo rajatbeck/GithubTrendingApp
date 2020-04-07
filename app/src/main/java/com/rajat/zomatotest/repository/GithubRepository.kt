@@ -5,7 +5,9 @@ import com.rajat.zomatotest.models.Repository
 import com.rajat.zomatotest.models.Resource
 import com.rajat.zomatotest.repository.local.RepositoryDAO
 import com.rajat.zomatotest.repository.remote.GithubService
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -14,15 +16,18 @@ const val NETWORK_FAILURE = "network_failure"
 const val INSERTION_ERROR = "insertion_error"
 const val EMPTY_TABLE = "empty_table"
 
-class GithubRepository @Inject constructor(private val dao: RepositoryDAO,private val api:GithubService) {
+class GithubRepository @Inject constructor(
+    private val dao: RepositoryDAO,
+    private val api: GithubService
+) {
 
-    private fun fetchDataFromNetwork(): Single<Resource<List<Repository>>>{
+    private fun fetchDataFromNetwork(): Single<Resource<List<Repository>>> {
         return api.getTrendingRepoInGit()
             .onErrorReturn { listOf<Repository>() }
             .flatMap {
-                if(it.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     Single.just(Resource.Success(it))
-                }else {
+                } else {
                     Single.just(Resource.Error(NETWORK_FAILURE, it))
                 }
             }
@@ -39,60 +44,78 @@ class GithubRepository @Inject constructor(private val dao: RepositoryDAO,privat
             }
     }
 
-    private fun deleteAndInsertIntoDb(repositoryList: List<Repository>):Completable{
-        return Completable.fromAction {dao.deleteBeforeInsert(repositoryList)}
+    private fun deleteAndInsertIntoDb(repositoryList: List<Repository>): Completable {
+        return Completable.fromAction { dao.deleteBeforeInsert(repositoryList) }
     }
 
-    private fun getRepositoryListFromDb():Single<Resource<List<Repository>>>{
-       return dao.getRepositoryListOnce()
+    private fun getRepositoryListFromDb(): Single<Resource<List<Repository>>> {
+        return dao.getRepositoryListOnce()
             .onErrorReturn { listOf() }
-            .map { list->
-                 if(list.isNotEmpty()){
+            .map { list ->
+                if (list.isNotEmpty()) {
                     Resource.Success(list)
-                }else{
-                    Resource.Error(EMPTY_TABLE,list)
+                } else {
+                    Resource.Error(EMPTY_TABLE, list)
                 }
             }
     }
 
-    fun makeRequestForTrendingRepo(force:Boolean = false):Single<Resource<List<Repository>>>{
-        return getRepositoryListFromDb()
-            .flatMap {dbList-> fetchDataFromNetwork().map { networkList-> uniqueMergeList(dbList,networkList) }
-            }.flatMap {
-                if(it is Resource.Success){
-                    deleteAndInsertIntoDb(it.data as List<Repository>).andThen(Single.just(it))
-                }else{
-                   getRepositoryListFromDb()
+    fun makeRequestForTrendingRepo(force: Boolean = false): Flowable<Resource<List<Repository>>> {
+        return getRepositoryListFromDb().toFlowable()
+            .flatMap { dbResponse ->
+                if (dbResponse is Resource.Error && dbResponse.message == EMPTY_TABLE) {
+                    fetchDataFromNetwork().toFlowable()
+                        .flatMap {
+                            if (it is Resource.Success) {
+                                deleteAndInsertIntoDb(it.data as List<Repository>)
+                                    .andThen(Flowable.just(it))
+                            } else {
+                                Flowable.just(it)
+                            }
+                        }.startWith(Flowable.just(Resource.Loading()))
+                } else {
+                    fetchDataFromNetwork().toFlowable()
+                        .flatMap { networkResponse -> uniqueMergeList(dbResponse, networkResponse) }
+                        .flatMap { response ->
+                            deleteAndInsertIntoDb(response.data as List<Repository>)
+                                .andThen(Flowable.just(response))
+                        }
                 }
             }.subscribeOn(Schedulers.io())
     }
 
     private fun uniqueMergeList(
-        dbList: Resource<List<Repository>>,
-        networkList: Resource<List<Repository>>
-    ): Resource<List<Repository>> {
-        return if (networkList is Resource.Success) {
-            val updatedList = mutableListOf<Repository>()
-            networkList.data?.forEach { networkData ->
-                var dataAlreadyExists = false
-                dbList.data?.forEach { offlineData ->
-                    if ("${offlineData.name}${offlineData.author}" == "${networkData.name}${networkData.author}") {
-                        dataAlreadyExists = true
-                        val updatedData =
-                            networkData.copy(isExpanded = offlineData.isExpanded)
-                        updatedList.add(updatedData)
+        dbResponse: Resource<List<Repository>>,
+        networkResponse: Resource<List<Repository>>
+    ): Flowable<Resource<List<Repository>>> {
+        return Flowable.create<Resource<List<Repository>>>({ emitter ->
+            if (networkResponse is Resource.Success) {
+                val updatedList = mutableListOf<Repository>()
+                networkResponse.data?.forEach { networkData ->
+                    var dataAlreadyExists = false
+                    dbResponse.data?.forEach { offlineData ->
+                        if ("${offlineData.name}${offlineData.author}" == "${networkData.name}${networkData.author}") {
+                            dataAlreadyExists = true
+                            val updatedData =
+                                networkData.copy(isExpanded = offlineData.isExpanded)
+                            updatedList.add(updatedData)
+                        }
+                    }
+                    if (!dataAlreadyExists) {
+                        updatedList.add(networkData)
                     }
                 }
-                if (!dataAlreadyExists) {
-                    updatedList.add(networkData)
-                }
+                emitter.onNext(Resource.Success(updatedList.toList()))
+                emitter.onComplete()
+            } else {
+                emitter.onNext(dbResponse)
+                emitter.onComplete()
             }
-            Resource.Success(updatedList.toList())
-        } else {
-            dbList
-        }
+        }, BackpressureStrategy.BUFFER)
+
     }
 
-    fun getObservableRepositoryListDB():LiveData<List<Repository>> = dao.getObservableRepositoryList()
+    fun getObservableRepositoryListDB(): LiveData<List<Repository>> =
+        dao.getObservableRepositoryList()
 
 }
