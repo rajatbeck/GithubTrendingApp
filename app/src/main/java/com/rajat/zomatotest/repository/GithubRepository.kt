@@ -68,4 +68,6 @@ class GithubRepository @Inject constructor(private val dao: RepositoryDAO,privat
             }.subscribeOn(Schedulers.io())
     }
 
+    fun getObservableRepositoryListDB():LiveData<List<Repository>> = dao.getObservableRepositoryList()
+
 }

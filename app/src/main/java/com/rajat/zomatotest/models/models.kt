@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
 
 //Note - Made all the fields nullable
 
-@Entity(tableName = "repository",primaryKeys = ["name","author"])
+@Entity(tableName = "repository",primaryKeys = ["name"])
 @JsonClass(generateAdapter = true)
 data class Repository(
     @Json(name="author") @ColumnInfo(name= "author") val author: String,
@@ -43,6 +43,7 @@ sealed class Resource<T>(
 }
 
 enum class SortType {
+    NONE,
     SORT_BY_STAR,
     SORT_BY_NAME
 }

@@ -15,27 +15,51 @@ class MainViewModel @Inject constructor(private val githubRepository: GithubRepo
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val repositoryLiveData:MediatorLiveData<Resource<List<Repository>>> = MediatorLiveData();
+    private val repositoryLiveData = githubRepository.getObservableRepositoryListDB()
+
+    private val mediadatorRepoLiveData:MediatorLiveData<Resource<List<Repository>>> = MediatorLiveData()
+
+    private var currentSortType:SortType = SortType.NONE
 
     init {
-
+        mediadatorRepoLiveData.addSource(repositoryLiveData) {
+            mediadatorRepoLiveData.value = sort(
+                currentSortType,
+                repositoryLiveData.value
+            )?.let { list -> Resource.Success(list) }
+        }
     }
 
-    fun observeTrendingRepository():LiveData<Resource<List<Repository>>> = repositoryLiveData
+    fun observeTrendingRepository():LiveData<Resource<List<Repository>>> = mediadatorRepoLiveData
 
     fun fetchTrendingGitHubRepository(forceFetch: Boolean = false) {
-        repositoryLiveData.value = Resource.Loading()
+        mediadatorRepoLiveData.value = Resource.Loading()
         val disposable = githubRepository.makeRequestForTrendingRepo(forceFetch)
             .observeOn( AndroidSchedulers.mainThread())
             .subscribe({response ->
-                repositoryLiveData.value = response
+                mediadatorRepoLiveData.value = response
             },{error->
                 //some unexpected error occured..
             })
         compositeDisposable.add(disposable)
     }
 
-    fun sort(sortType: SortType){
+    fun rearrange(sortType: SortType){
+        mediadatorRepoLiveData.value = sort(sortType,repositoryLiveData.value)?.
+            let {list -> Resource.Success(list) }
+    }
 
+    private fun sort(sortType: SortType, list: List<Repository>?): List<Repository>? =
+        when (sortType) {
+            SortType.SORT_BY_NAME -> list?.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) {it.name})
+            SortType.SORT_BY_STAR -> list?.sortedByDescending { it.stars }
+            else -> list
+        }.also { currentSortType = sortType }
+
+    override fun onCleared() {
+        if(!compositeDisposable.isDisposed){
+            compositeDisposable.dispose()
+        }
+        super.onCleared()
     }
 }

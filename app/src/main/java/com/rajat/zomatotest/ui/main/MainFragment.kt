@@ -91,9 +91,9 @@ class MainFragment : Fragment() {
 
     fun onMenuItemClicked(menuId:Int){
         if(menuId == R.id.sortName){
-            viewModel.sort(SortType.SORT_BY_NAME)
+            viewModel.rearrange(SortType.SORT_BY_NAME)
         }else{
-            viewModel.sort(SortType.SORT_BY_STAR)
+            viewModel.rearrange(SortType.SORT_BY_STAR)
         }
     }
 
