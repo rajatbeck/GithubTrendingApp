@@ -4,4 +4,6 @@
     <string name="error_title">Something went wrong..</string>
     <string name="error_message">An alien is probably blocking your signal.</string>
     <string name="text_retry">retry</string>
+    <string name="sort_by_stars">Sort by stars</string>
+    <string name="sort_by_name">Sort by name</string>
 </resources>

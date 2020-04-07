@@ -3,10 +3,8 @@ package com.rajat.zomatotest.ui.main
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +14,7 @@ import com.rajat.zomatotest.R
 import com.rajat.zomatotest.ZomatoApp
 import com.rajat.zomatotest.models.Repository
 import com.rajat.zomatotest.models.Resource
+import com.rajat.zomatotest.models.SortType
 import com.rajat.zomatotest.utils.ViewModelFactory
 import kotlinx.android.synthetic.main.layout_error_view.*
 import kotlinx.android.synthetic.main.main_fragment.*
@@ -87,6 +86,14 @@ class MainFragment : Fragment() {
                 errorView.visibility = View.GONE
                 rvRepositoryList.visibility = View.GONE
             }
+        }
+    }
+
+    fun onMenuItemClicked(menuId:Int){
+        if(menuId == R.id.sortName){
+            viewModel.sort(SortType.SORT_BY_NAME)
+        }else{
+            viewModel.sort(SortType.SORT_BY_STAR)
         }
     }
 
