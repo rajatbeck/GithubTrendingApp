@@ -46,15 +46,23 @@
 
     </com.facebook.shimmer.ShimmerFrameLayout>
 
+
     <include
         android:id="@+id/errorView"
-        android:visibility="gone"
-        layout="@layout/layout_error_view" />
+        layout="@layout/layout_error_view"
+        android:visibility="gone" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRepositoryList"
-        tools:listitem="@layout/layout_repo_row"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRepositoryList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/layout_repo_row" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

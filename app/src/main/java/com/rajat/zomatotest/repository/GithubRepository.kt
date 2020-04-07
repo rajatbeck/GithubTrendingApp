@@ -63,7 +63,7 @@ class GithubRepository @Inject constructor(
     fun makeRequestForTrendingRepo(force: Boolean = false): Flowable<Resource<List<Repository>>> {
         return getRepositoryListFromDb().toFlowable()
             .flatMap { dbResponse ->
-                if (dbResponse is Resource.Error && dbResponse.message == EMPTY_TABLE) {
+                if (dbResponse is Resource.Error && dbResponse.message == EMPTY_TABLE ) {
                     fetchDataFromNetwork().toFlowable()
                         .flatMap {
                             if (it is Resource.Success) {

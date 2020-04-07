@@ -1,10 +1,12 @@
 package com.rajat.zomatotest.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -58,15 +60,20 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        swipeContainer.setOnRefreshListener { invokeNetworkCall(true) }
+        swipeContainer.setColorSchemeResources(R.color.titleColor)
         viewModel.observeTrendingRepository().observe(viewLifecycleOwner, Observer { renderUI(it) })
-        viewModel.fetchTrendingGitHubRepository(forceFetch = false)
-        btnRetry.setOnClickListener { viewModel.fetchTrendingGitHubRepository(forceFetch = false) }
+        invokeNetworkCall()
+        btnRetry.setOnClickListener { invokeNetworkCall() }
+    }
+
+    private fun invokeNetworkCall(forceFetch:Boolean = false){
+        viewModel.fetchTrendingGitHubRepository(forceFetch = forceFetch)
     }
 
     private fun initView() {
         with(rvRepositoryList) {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
             adapter = mainAdapter
         }
@@ -78,9 +85,11 @@ class MainFragment : Fragment() {
                 shimmerViewContainer.visibility = View.GONE
                 errorView.visibility = View.GONE
                 rvRepositoryList.visibility = View.VISIBLE
+                swipeContainer.isRefreshing = false
                 mainAdapter.submitList(uiResponse.data)
             }
             is Resource.Error -> {
+                swipeContainer.isRefreshing = false
                 shimmerViewContainer.visibility = View.GONE
                 errorView.visibility = View.VISIBLE
                 rvRepositoryList.visibility = View.GONE
