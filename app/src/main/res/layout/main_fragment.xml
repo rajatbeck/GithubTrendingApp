@@ -3,34 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/colorWhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.main.MainFragment">
 
     <com.facebook.shimmer.ShimmerFrameLayout
-        tools:visibility="gone"
-        android:visibility="gone"
         android:id="@+id/shimmerViewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:orientation="vertical"
-        app:shimmer_duration="800">
+        android:visibility="gone"
+        app:shimmer_duration="500"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
+
             <include layout="@layout/layout_shimmer_placeholder" />
         </LinearLayout>
 
@@ -38,6 +48,13 @@
 
     <include
         android:id="@+id/errorView"
-        layout="@layout/layout_error_view"/>
+        android:visibility="gone"
+        layout="@layout/layout_error_view" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRepositoryList"
+        tools:listitem="@layout/layout_repo_row"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
