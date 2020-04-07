@@ -21,8 +21,8 @@ class GithubRepository @Inject constructor(
     private val api: GithubService
 ) {
 
-    private fun fetchDataFromNetwork(): Single<Resource<List<Repository>>> {
-        return api.getTrendingRepoInGit()
+    private fun fetchDataFromNetwork(force: Boolean = false): Single<Resource<List<Repository>>> {
+        return chooseCachedAndNonCachedAPI(force)
             .onErrorReturn { listOf<Repository>() }
             .flatMap {
                 if (it.isNotEmpty()) {
@@ -32,6 +32,9 @@ class GithubRepository @Inject constructor(
                 }
             }
     }
+
+    private fun chooseCachedAndNonCachedAPI(force: Boolean = false): Single<List<Repository>> =
+        if (force) api.getTrendingRepoInGitNonCached() else api.getTrendingRepoInGit()
 
     fun insertRepositoryIntoDb(repositoryList: List<Repository>): Single<Resource<Long>> {
         return dao.insertRepositoryList(repositoryList)
@@ -62,9 +65,9 @@ class GithubRepository @Inject constructor(
 
     fun makeRequestForTrendingRepo(force: Boolean = false): Flowable<Resource<List<Repository>>> {
         return getRepositoryListFromDb().toFlowable()
-            .flatMap { dbResponse ->
-                if (dbResponse is Resource.Error && dbResponse.message == EMPTY_TABLE ) {
-                    fetchDataFromNetwork().toFlowable()
+            .switchMap { dbResponse ->
+                if (dbResponse is Resource.Error && dbResponse.message == EMPTY_TABLE) {
+                    fetchDataFromNetwork(force).toFlowable()
                         .flatMap {
                             if (it is Resource.Success) {
                                 deleteAndInsertIntoDb(it.data as List<Repository>)
@@ -74,7 +77,7 @@ class GithubRepository @Inject constructor(
                             }
                         }.startWith(Flowable.just(Resource.Loading()))
                 } else {
-                    fetchDataFromNetwork().toFlowable()
+                    fetchDataFromNetwork(force).toFlowable()
                         .flatMap { networkResponse -> uniqueMergeList(dbResponse, networkResponse) }
                         .flatMap { response ->
                             deleteAndInsertIntoDb(response.data as List<Repository>)

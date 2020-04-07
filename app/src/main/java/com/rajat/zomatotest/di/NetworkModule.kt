@@ -2,6 +2,7 @@ package com.rajat.zomatotest.di
 
 import android.app.Application
 import com.rajat.zomatotest.BuildConfig
+import com.rajat.zomatotest.repository.remote.CachedNetworkInterceptor
 import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.RxErrorHandlingCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
@@ -33,7 +34,8 @@ object NetworkModule {
     @JvmStatic
     @Provides
     @Singleton
-    fun provideOkHttpClientBuilder(): OkHttpClient.Builder = OkHttpClient.Builder()
+    fun provideOkHttpClientBuilder(cachedNetworkInterceptor: CachedNetworkInterceptor): OkHttpClient.Builder =
+        OkHttpClient.Builder().addNetworkInterceptor(cachedNetworkInterceptor)
 
 
     @JvmStatic
@@ -52,8 +54,7 @@ object NetworkModule {
         return if (BuildConfig.DEBUG) {
             val httpLogger = HttpLoggingInterceptor()
             httpLogger.level = HttpLoggingInterceptor.Level.BODY
-            builder.addInterceptor(httpLogger)
-                .addInterceptor(ChuckInterceptor(application)).build()
+            builder.addInterceptor(httpLogger).addInterceptor(ChuckInterceptor(application)).build()
         } else builder.build()
 
     }

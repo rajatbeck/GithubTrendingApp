@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        app:shimmer_duration="500"
+        app:shimmer_duration="800"
         tools:visibility="visible">
 
         <LinearLayout
@@ -47,16 +47,10 @@
     </com.facebook.shimmer.ShimmerFrameLayout>
 
 
-    <include
-        android:id="@+id/errorView"
-        layout="@layout/layout_error_view"
-        android:visibility="gone" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRepositoryList"
@@ -64,5 +58,10 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/layout_repo_row" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include
+        android:id="@+id/errorView"
+        layout="@layout/layout_error_view"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
