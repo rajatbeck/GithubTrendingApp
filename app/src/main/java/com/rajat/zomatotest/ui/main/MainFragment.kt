@@ -73,7 +73,6 @@ class MainFragment : Fragment() {
     }
 
     private fun renderUI(uiResponse: Resource<List<Repository>>) {
-        Log.d(TAG,"**${uiResponse.toString()}**")
         when (uiResponse) {
             is Resource.Success -> {
                 shimmerViewContainer.visibility = View.GONE

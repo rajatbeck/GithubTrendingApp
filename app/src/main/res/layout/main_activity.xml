@@ -33,13 +33,15 @@
                 android:textColor="@color/titleColor"
                 android:textSize="@dimen/twenty_one_sp" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btnMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/more_black_24"
+                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="@dimen/twenty_dp"
+                android:scaleType="fitEnd"
+                android:layout_marginEnd="@dimen/sixteen_dp"
                 />
             </FrameLayout>
         </androidx.appcompat.widget.Toolbar>
