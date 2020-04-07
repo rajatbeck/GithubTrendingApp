@@ -76,6 +76,7 @@ class MainFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
             adapter = mainAdapter
+            itemAnimator = null
         }
     }
 
