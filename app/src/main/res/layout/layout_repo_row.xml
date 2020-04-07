@@ -146,6 +146,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:visibility="visible"
+        android:id="@+id/expandedView"
         app:constraint_referenced_ids="tvDescriptionAndLink,languageColorCode,
         tvLanguage,
 ivStar,

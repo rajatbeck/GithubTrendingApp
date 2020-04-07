@@ -7,8 +7,12 @@ import com.rajat.zomatotest.models.Repository
 import com.rajat.zomatotest.models.Resource
 import com.rajat.zomatotest.models.SortType
 import com.rajat.zomatotest.repository.GithubRepository
+import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val githubRepository: GithubRepository): ViewModel() {
@@ -47,6 +51,34 @@ class MainViewModel @Inject constructor(private val githubRepository: GithubRepo
     fun rearrange(sortType: SortType){
         mediadatorRepoLiveData.value = sort(sortType,repositoryLiveData.value)?.
             let {list -> Resource.Success(list) }
+    }
+
+    fun expandRow(repository: Repository){
+      val disposable = Single.just(repository)
+            .flatMap {repo->
+                val list = repositoryLiveData.value?.map {
+                    val expanded = if(!it.isExpanded){
+                        it == repo
+                    }else {
+                        false
+                    }
+                    val modifiedRep = it.copy(isExpanded = expanded)
+                    modifiedRep
+                }
+                Single.just(list)
+            }.flatMap { list-> githubRepository.insertRepositoryIntoDb(list) }
+           .subscribeOn(Schedulers.io())
+           .observeOn(AndroidSchedulers.mainThread())
+           .subscribe({
+               //do nothing live data will do the job
+           },
+               {error->
+                   //Unexpected error case
+               })
+        compositeDisposable.add(disposable)
+
+
+
     }
 
     private fun sort(sortType: SortType, list: List<Repository>?): List<Repository>? =

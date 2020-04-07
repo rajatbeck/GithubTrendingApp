@@ -3,6 +3,7 @@ package com.rajat.zomatotest.ui.main
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,7 +16,8 @@ import com.rajat.zomatotest.models.Repository
 import kotlinx.android.synthetic.main.layout_repo_row.view.*
 
 
-class MainAdapter:ListAdapter<Repository,MainAdapter.RepositoryViewHolder>(DIFF){
+class MainAdapter constructor(private val onItemClick: (Int,Repository) -> Unit) :
+    ListAdapter<Repository, MainAdapter.RepositoryViewHolder>(DIFF) {
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Repository>(){
@@ -36,6 +38,7 @@ class MainAdapter:ListAdapter<Repository,MainAdapter.RepositoryViewHolder>(DIFF)
 
     override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
         holder.bindTo(getItem(position))
+        holder.itemView.setOnClickListener { onItemClick.invoke(position,getItem(position)) }
     }
 
     inner class RepositoryViewHolder(parent: ViewGroup):
@@ -51,6 +54,11 @@ class MainAdapter:ListAdapter<Repository,MainAdapter.RepositoryViewHolder>(DIFF)
                     .apply(circleCrop)
                     .transition(withCrossFade())
                     .into(ivAvatar)
+                if(repository.isExpanded){
+                    expandedView.visibility = View.VISIBLE
+                }else{
+                    expandedView.visibility = View.GONE
+                }
                 tvDescriptionAndLink.text = "${repository.description}(${repository.url})"
                 Glide.with(this)
                     .load(ColorDrawable(Color.parseColor(repository.languageColor?:"#FFFFFF")))

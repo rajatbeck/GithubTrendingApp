@@ -1,12 +1,11 @@
 package com.rajat.zomatotest.ui.main
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import com.rajat.zomatotest.ZomatoApp
 import com.rajat.zomatotest.models.Repository
 import com.rajat.zomatotest.models.Resource
 import com.rajat.zomatotest.models.SortType
-import com.rajat.zomatotest.utils.ViewModelFactory
 import kotlinx.android.synthetic.main.layout_error_view.*
 import kotlinx.android.synthetic.main.main_fragment.*
 import javax.inject.Inject
@@ -28,29 +26,33 @@ class MainFragment : Fragment() {
     }
 
     @Inject
-    lateinit var factory:ViewModelProvider.Factory
+    lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel:MainViewModel by lazy { ViewModelProvider(requireActivity(),factory).get(MainViewModel::class.java) }
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            factory
+        ).get(MainViewModel::class.java)
+    }
 
-    private val mainAdapter:MainAdapter by lazy { MainAdapter() }
+    private val mainAdapter: MainAdapter by lazy { MainAdapter(this::onItemClick) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         super.onCreate(savedInstanceState)
     }
 
-    private fun inject(){
+    private fun inject() {
         (requireActivity().application as ZomatoApp).fragmentComponent().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,17 +62,18 @@ class MainFragment : Fragment() {
         btnRetry.setOnClickListener { viewModel.fetchTrendingGitHubRepository(forceFetch = false) }
     }
 
-    private fun initView(){
-        with(rvRepositoryList){
-             layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-             addItemDecoration(DividerItemDecoration(requireContext(),LinearLayoutManager.VERTICAL))
-             adapter = mainAdapter
+    private fun initView() {
+        with(rvRepositoryList) {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL))
+            adapter = mainAdapter
         }
     }
 
-    private fun renderUI(uiResponse:Resource<List<Repository>>){
-        when(uiResponse){
-            is Resource.Success ->{
+    private fun renderUI(uiResponse: Resource<List<Repository>>) {
+        when (uiResponse) {
+            is Resource.Success -> {
                 shimmerViewContainer.visibility = View.GONE
                 errorView.visibility = View.GONE
                 rvRepositoryList.visibility = View.VISIBLE
@@ -89,12 +92,16 @@ class MainFragment : Fragment() {
         }
     }
 
-    fun onMenuItemClicked(menuId:Int){
-        if(menuId == R.id.sortName){
+    fun onMenuItemClicked(menuId: Int) {
+        if (menuId == R.id.sortName) {
             viewModel.rearrange(SortType.SORT_BY_NAME)
-        }else{
+        } else {
             viewModel.rearrange(SortType.SORT_BY_STAR)
         }
+    }
+
+    private fun onItemClick(position:Int,repository: Repository){
+        viewModel.expandRow(repository)
     }
 
 
