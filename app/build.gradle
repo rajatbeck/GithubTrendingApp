@@ -93,7 +93,30 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:${swipe_refresh_version}"
 
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'junit:junit:4.12'
+
+
+    def junit_version = "5.5.2"
+    // (Required) Writing and executing Unit Tests on the JUnit Platform
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
+
+    // (Optional) If you need "Parameterized Tests"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junit_version}"
+
+
+    def core_version = "1.0.0"
+    // Core library
+    androidTestImplementation "androidx.test:core:${core_version}"
+
+    def junit_rule_version = "1.1.0"
+    // AndroidJUnitRunner and JUnit Rules
+    androidTestImplementation "androidx.test:runner:${junit_rule_version}"
+    androidTestImplementation "androidx.test:rules:${junit_rule_version}"
+
+    def androidx_core_test_version = "2.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:${androidx_core_test_version}"
+
+    def mockito_version = "2.19.0"
+    testImplementation "org.mockito:mockito-core:${mockito_version}"
 }
