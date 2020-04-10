@@ -87,7 +87,7 @@ class GithubRepository @Inject constructor(
             }.subscribeOn(Schedulers.io())
     }
 
-    private fun uniqueMergeList(
+    fun uniqueMergeList(
         dbResponse: Resource<List<Repository>>,
         networkResponse: Resource<List<Repository>>
     ): Flowable<Resource<List<Repository>>> {
