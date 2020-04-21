@@ -36,6 +36,7 @@ class GithubRepository @Inject constructor(
     private fun chooseCachedAndNonCachedAPI(force: Boolean = false): Single<List<Repository>> =
         if (force) api.getTrendingRepoInGitNonCached() else api.getTrendingRepoInGit()
 
+    //TODO: return a completable over here
     fun insertRepositoryIntoDb(repositoryList: List<Repository>): Single<Resource<Long>> {
         return dao.insertRepositoryList(repositoryList)
             .onErrorReturn { listOf() }.map {
