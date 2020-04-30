@@ -52,7 +52,7 @@ class GithubRepository @Inject constructor(
         return Completable.fromAction { dao.deleteBeforeInsert(repositoryList) }
     }
 
-    private fun getRepositoryListFromDb(): Single<Resource<List<Repository>>> {
+    fun getRepositoryListFromDb(): Single<Resource<List<Repository>>> {
         return dao.getRepositoryListOnce()
             .onErrorReturn { listOf() }
             .map { list ->

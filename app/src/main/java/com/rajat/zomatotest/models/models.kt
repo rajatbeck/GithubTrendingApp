@@ -2,7 +2,6 @@ package com.rajat.zomatotest.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -40,6 +39,35 @@ sealed class Resource<T>(
     class Success<T>(data: T? = null) : Resource<T>(data)
     class Loading<T>(data: T? = null) : Resource<T>(data)
     class Error<T>(message: String, data: T? = null) : Resource<T>(data, message)
+
+    override fun equals(other: Any?): Boolean {
+        if (other?.javaClass != javaClass ) {
+            return false
+        }
+
+        val resource: Resource<T> = other as Resource<T>
+
+        if (resource.javaClass != this.javaClass) {
+            return false
+        }
+
+        if (data != null) {
+            if (resource.data !== data) {
+                return false
+            }
+        }
+
+        if (resource.message != null) {
+            if (message == null) {
+                return false
+            }
+            if (resource.message != message) {
+                return false
+            }
+        }
+
+        return true
+    }
 }
 
 enum class SortType {

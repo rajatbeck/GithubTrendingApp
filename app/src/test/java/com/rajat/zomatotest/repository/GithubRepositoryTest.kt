@@ -7,10 +7,14 @@ import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.InstantExecutorExtension
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import io.reactivex.Single
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
 @ExtendWith(InstantExecutorExtension::class)
@@ -95,6 +99,22 @@ class GithubRepositoryTest {
         }
 
         returnedObserver.dispose()
+    }
+
+
+    @Test
+    fun getRepositoryListOnce_emptyTest(){
+
+        val emptyList = listOf<Repository>()
+        val mockedValue = Single.just(emptyList)
+        `when`(dao.getRepositoryListOnce()).thenReturn(mockedValue)
+
+        val returnedValue:Resource<List<Repository>> = githubRepository.getRepositoryListFromDb().blockingGet()
+
+        verify(dao).getRepositoryListOnce()
+        verifyNoMoreInteractions(dao)
+
+        Assertions.assertEquals(returnedValue,Resource.Error(EMPTY_TABLE,emptyList))
     }
 
     companion object {
