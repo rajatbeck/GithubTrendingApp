@@ -48,7 +48,7 @@ class GithubRepository @Inject constructor(
             }
     }
 
-    private fun deleteAndInsertIntoDb(repositoryList: List<Repository>): Completable {
+    fun deleteAndInsertIntoDb(repositoryList: List<Repository>): Completable {
         return Completable.fromAction { dao.deleteBeforeInsert(repositoryList) }
     }
 

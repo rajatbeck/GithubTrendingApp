@@ -52,7 +52,7 @@ sealed class Resource<T>(
         }
 
         if (data != null) {
-            if (resource.data !== data) {
+            if (resource.data != data) {
                 return false
             }
         }

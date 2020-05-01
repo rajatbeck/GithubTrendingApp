@@ -7,10 +7,13 @@ import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.InstantExecutorExtension
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.observers.TestObserver
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -119,14 +122,14 @@ class GithubRepositoryTest {
         verify(dao).getRepositoryListOnce()
         verifyNoMoreInteractions(dao)
 
-        Assertions.assertEquals(returnedValue,Resource.Error(EMPTY_TABLE,emptyList))
+        assertEquals(returnedValue,Resource.Error(EMPTY_TABLE,emptyList))
     }
 
     /**
-     *
-     *
+     * Case when the database is empty and the response you get from the
+     * server is also empty or you have some error (4XX .. 5XX)
+     * then return an error and empty list
      */
-
     @Test
     fun makeRequestForTrendingRepo_firstTimeErrorResponseTest(){
 
@@ -144,10 +147,47 @@ class GithubRepositoryTest {
 
         verify(dao, times(2)).getRepositoryListOnce()
         verify(service, times(2)).getTrendingRepoInGit()
+        verifyNoMoreInteractions(dao,service)
+
+        assertEquals(initialReturnedValue,Resource.Loading<List<Repository>>())
+        assertEquals(returnedLast,Resource.Error(NETWORK_FAILURE, emptyList))
+    }
+
+    /**
+     *
+     */
+    @Test
+    fun makeRequestForTrendingRepo_showUpdatedResponseFromNetwork(){
+
+        val dbResponse = Single.just(getTrendingRepoInGitTest())
+        val networkResponse = Single.just(getOneItemInListData()) // updatedList has only one item
+
+        `when`(dao.getRepositoryListOnce()).thenReturn(dbResponse)
+        `when`(service.getTrendingRepoInGit()).thenReturn(networkResponse)
+
+        val returnedValue = githubRepository.makeRequestForTrendingRepo(false).blockingLast()
+
+        verify(dao, times(1)).getRepositoryListOnce()
+        verify(service, times(1)).getTrendingRepoInGit()
+        verify(dao, times(1)).deleteBeforeInsert(getOneItemInListData())
+        verifyNoMoreInteractions(dao,service)
+
+        assertEquals(returnedValue,Resource.Success(getOneItemInListData()))
+
+    }
+
+    /**
+     * Case to test delete and insert has run to completion
+     */
+    @Test
+    fun deleteAndInsertIntoDb_testCompletion(){
+
+        val returnedData = githubRepository.deleteAndInsertIntoDb(getOneItemInListData()).test()
+
+        verify(dao, times(1)).deleteBeforeInsert(getOneItemInListData())
         verifyNoMoreInteractions(dao)
 
-        Assertions.assertEquals(initialReturnedValue,Resource.Loading<List<Repository>>())
-        Assertions.assertEquals(returnedLast,Resource.Error(NETWORK_FAILURE, emptyList))
+        returnedData.assertComplete()
     }
 
     companion object {
