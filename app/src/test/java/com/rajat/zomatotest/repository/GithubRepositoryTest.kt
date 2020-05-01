@@ -7,7 +7,9 @@ import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.InstantExecutorExtension
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.subscribers.TestSubscriber
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -102,6 +104,9 @@ class GithubRepositoryTest {
     }
 
 
+    /**
+     * Case to test return error if database is empty
+     */
     @Test
     fun getRepositoryListOnce_emptyTest(){
 
@@ -115,6 +120,34 @@ class GithubRepositoryTest {
         verifyNoMoreInteractions(dao)
 
         Assertions.assertEquals(returnedValue,Resource.Error(EMPTY_TABLE,emptyList))
+    }
+
+    /**
+     *
+     *
+     */
+
+    @Test
+    fun makeRequestForTrendingRepo_firstTimeErrorResponseTest(){
+
+        //Initial case
+        val emptyList = listOf<Repository>()
+        val mockedValue = Single.just(emptyList)
+
+        // Value to be returned from server
+        `when`(service.getTrendingRepoInGit()).thenReturn(mockedValue)
+        //value to be returned form database
+        `when`(dao.getRepositoryListOnce()).thenReturn(mockedValue)
+
+        val initialReturnedValue = githubRepository.makeRequestForTrendingRepo(false).blockingFirst()
+        val returnedLast = githubRepository.makeRequestForTrendingRepo(false).blockingLast()
+
+        verify(dao, times(2)).getRepositoryListOnce()
+        verify(service, times(2)).getTrendingRepoInGit()
+        verifyNoMoreInteractions(dao)
+
+        Assertions.assertEquals(initialReturnedValue,Resource.Loading<List<Repository>>())
+        Assertions.assertEquals(returnedLast,Resource.Error(NETWORK_FAILURE, emptyList))
     }
 
     companion object {
