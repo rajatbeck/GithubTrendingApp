@@ -7,18 +7,12 @@ import com.rajat.zomatotest.repository.remote.GithubService
 import com.rajat.zomatotest.utils.InstantExecutorExtension
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.observers.TestObserver
-import io.reactivex.subscribers.TestSubscriber
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
@@ -133,7 +127,7 @@ class GithubRepositoryTest {
     @Test
     fun makeRequestForTrendingRepo_firstTimeErrorResponseTest(){
 
-        //Initial case
+        //Arrange
         val emptyList = listOf<Repository>()
         val mockedValue = Single.just(emptyList)
 
@@ -142,18 +136,29 @@ class GithubRepositoryTest {
         //value to be returned form database
         `when`(dao.getRepositoryListOnce()).thenReturn(mockedValue)
 
-        val initialReturnedValue = githubRepository.makeRequestForTrendingRepo(false).blockingFirst()
-        val returnedLast = githubRepository.makeRequestForTrendingRepo(false).blockingLast()
+        //Act
+        val testSubscriber = githubRepository.makeRequestForTrendingRepo(false).test()
+        testSubscriber.awaitTerminalEvent()
 
-        verify(dao, times(2)).getRepositoryListOnce()
-        verify(service, times(2)).getTrendingRepoInGit()
+        // Assert
+        verify(dao, times(1)).getRepositoryListOnce()
+        verify(service, times(1)).getTrendingRepoInGit()
         verifyNoMoreInteractions(dao,service)
 
-        assertEquals(initialReturnedValue,Resource.Loading<List<Repository>>())
-        assertEquals(returnedLast,Resource.Error(NETWORK_FAILURE, emptyList))
+        testSubscriber
+            .assertNoErrors()
+            .assertValueAt(0){ it == Resource.Loading<List<Repository>>() }
+            .assertValueAt(1){ it == Resource.Error(NETWORK_FAILURE, emptyList) }
+            .assertComplete()
+
+
     }
 
     /**
+     *
+     *  Case when there is already an item in DB but then
+     * when we fetch the data from network update the db with the
+     * latest data.
      *
      */
     @Test
