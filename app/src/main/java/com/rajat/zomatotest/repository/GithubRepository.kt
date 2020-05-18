@@ -1,10 +1,12 @@
 package com.rajat.zomatotest.repository
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.rajat.zomatotest.models.Repository
 import com.rajat.zomatotest.models.Resource
 import com.rajat.zomatotest.repository.local.RepositoryDAO
 import com.rajat.zomatotest.repository.remote.GithubService
+import com.rajat.zomatotest.utils.OpenForTesting
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -16,6 +18,7 @@ const val NETWORK_FAILURE = "network_failure"
 const val INSERTION_ERROR = "insertion_error"
 const val EMPTY_TABLE = "empty_table"
 
+@VisibleForTesting
 class GithubRepository @Inject constructor(
     private val dao: RepositoryDAO,
     private val api: GithubService

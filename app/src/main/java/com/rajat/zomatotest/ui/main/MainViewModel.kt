@@ -19,33 +19,33 @@ class MainViewModel @Inject constructor(private val githubRepository: GithubRepo
 
     private val repositoryLiveData = githubRepository.getObservableRepositoryListDB()
 
-    private val mediadatorRepoLiveData: MediatorLiveData<Resource<List<Repository>>> =
+    private val mediatorLiveData: MediatorLiveData<Resource<List<Repository>>> =
         MediatorLiveData()
 
     private var currentSortType: SortType = SortType.NONE
 
     init {
-        mediadatorRepoLiveData.addSource(repositoryLiveData) {
-            mediadatorRepoLiveData.value = sort(
+        mediatorLiveData.addSource(repositoryLiveData) {
+            mediatorLiveData.value = sort(
                 currentSortType,
                 repositoryLiveData.value
             )?.let { list -> Resource.Success(list) }
         }
     }
 
-    fun observeTrendingRepository(): LiveData<Resource<List<Repository>>> = mediadatorRepoLiveData
+    fun observeTrendingRepository(): LiveData<Resource<List<Repository>>> = mediatorLiveData
 
     fun fetchTrendingGitHubRepository(forceFetch: Boolean = false) {
         val disposable = githubRepository.makeRequestForTrendingRepo(forceFetch)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response -> mediadatorRepoLiveData.value = response },
+            .subscribe({ response -> mediatorLiveData.value = response },
                 { error -> /*some unexpected error occured.*/ })
         compositeDisposable.add(disposable)
     }
 
     fun rearrange(sortType: SortType) {
         if (repositoryLiveData.value?.isEmpty() == true) return
-        mediadatorRepoLiveData.value =
+        mediatorLiveData.value =
             sort(sortType, repositoryLiveData.value)?.let { list ->
                 Resource.Success(list)
             }
