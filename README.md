@@ -8,17 +8,17 @@ This Application shows the list of trending repositories in github on daily basi
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Portrait**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Landscape**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Sorting**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Refresh**
 
 
-This Application explore different Android component that can be used to create a simple single page application, Basically the app fetches data from server using <ins>Retrofit</ins> along with <ins>okhttp</ins> and saves it in <ins>Room Database</ins> and then renders the UI. App is completely based on reactive pattern courtesy <ins>Rxjava</ins>. Application code also implements designs patterns like <ins>*Singleton pattern*,*Observer Pattern*,*Builder Pattern*,*Factory pattern*,*Adapter pattern*</ins>.The code also supports Depedendency Injection one of the forms of inversion of control principle*(IOC)* with the help of <ins>Dagger2</ins>.All the views are created using <ins>Constraint layout</ins> to ensuring a flat view hierarchy.App's complete architecture is in <ins>MVVM</ins> and app also explores concept of <ins>LiveData</ins>. <br /><br />Please refer to this [link](https://githubtrendingapi.docs.apiary.io/#reference/0/developers/list-trending-repositories) for more details regarding github trending API.
+This Application explore different Android component that can be used to create a simple single page application, Basically the app fetches data from server using <ins>Retrofit</ins> along with <ins>okhttp</ins> and saves it in <ins>Room Database</ins> and then renders the UI. App is completely based on reactive pattern courtesy <ins>Rxjava</ins>. Application code also implements designs patterns like <ins>*Singleton pattern*,*Observer Pattern*,*Builder Pattern*,*Factory pattern*,*Adapter pattern*</ins>.The code also supports Depedendency Injection one of the forms of inversion of control principle(IOC) with the help of <ins>Dagger2</ins>.All the views are created using <ins>Constraint layout</ins> to ensuring a flat view hierarchy.App's complete architecture is in <ins>MVVM</ins> and app also explores concept of <ins>LiveData</ins>. <br /><br />Please refer to [this](https://githubtrendingapi.docs.apiary.io/#reference/0/developers/list-trending-repositories) link for more details regarding github trending API.
 
 This project explores the following concepts in details:    
 <ol>
   <li>Kotlin</li>   
   <li>Model-View-View-Model(MVVM)</li>  
   <li>Rxjava2</li>  
-  <li>Dagger2 ~~(Dagger-Android)~~</li>    
+  <li>Dagger2</li>    
   <li>Room</li>   
   <li>Retrofit</li>   
-<li>Okhttp3** ***(cache)***</li>   
+<li>Okhttp</li>   
   <li>Moshi</li>  
   <li>Google material deisgn</li>   
   <li>Junit5 and Mockito</li> <br />
